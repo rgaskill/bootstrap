@@ -27,6 +27,16 @@ angular.module('ui.bootstrap.progressbar', [])
             element = null;
             self.removeBar(bar);
         });
+
+        bar.$watch('type', function(newValue, oldValue) {
+            var classPart = 'progress-bar-';
+            if (oldValue) {
+                element.removeClass(classPart+oldValue);
+            }
+            if (newValue) {
+                element.addClass(classPart+newValue);
+            }
+        });
     };
 
     this.removeBar = function(bar) {
