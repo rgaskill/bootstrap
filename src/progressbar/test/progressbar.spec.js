@@ -1,14 +1,41 @@
 describe('progressbar directive', function () {
-  var $rootScope, $compile, element;
-  beforeEach(module('ui.bootstrap.progressbar'));
+  var $rootScope, $rootElement, $compile, $animate, element;
+  beforeEach(module('ngAnimate','ui.bootstrap.progressbar'));
   beforeEach(module('template/progressbar/progressbar.html', 'template/progressbar/progress.html', 'template/progressbar/bar.html'));
-  beforeEach(inject(function(_$compile_, _$rootScope_) {
+
+  var addClassAnimateCount = 0;
+  var body;
+  
+  beforeEach(module(function($animateProvider) {
+    $animateProvider.register('.progress-bar', function() {
+      return {
+        addClass : function(element, className, done) {
+          addClassAnimateCount++;
+          done();
+        }
+      };
+    });
+  }));
+
+
+  beforeEach(inject(function(_$compile_, _$rootScope_, _$animate_, _$rootElement_) {
+    body = $(document.body);
     $compile = _$compile_;
     $rootScope = _$rootScope_;
     $rootScope.value = 22;
+
+    $rootElement = _$rootElement_;
+    addClassAnimateCount = 0;
     element = $compile('<progressbar animate="false" value="value">{{value}} %</progressbar>')($rootScope);
+    $animate = _$animate_;
+    
+    $animate.enabled(true);
     $rootScope.$digest();
   }));
+
+  afterEach(function() {
+      dealoc(body);
+  });
 
   var BAR_CLASS = 'progress-bar';
 
@@ -139,6 +166,15 @@ describe('progressbar directive', function () {
       expect(barEl).toHaveClass(BAR_CLASS);
       expect(barEl).not.toHaveClass(BAR_CLASS + '-success');
       expect(barEl).toHaveClass(BAR_CLASS + '-warning');
+    });
+
+    it('should not animate using ngAnimate', function() {
+      $rootElement.append(element);
+      angular.element(document.body).append($rootElement);
+      $rootScope.type = 'warning';
+      $rootScope.$digest();
+
+      expect(addClassAnimateCount).toBe(0);
     });
   });
 

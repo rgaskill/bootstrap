@@ -25,6 +25,9 @@
     "module"     : false,
     "spyOn"      : false,
     "inject"     : false,
-    "it"         : false
+    "it"         : false,
+
+    // For Test Helpers
+    "dealoc"     : false
   }
 }

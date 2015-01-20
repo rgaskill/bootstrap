@@ -5,7 +5,9 @@ angular.module('ui.bootstrap.progressbar', [])
   max: 100
 })
 
-.controller('ProgressController', ['$scope', '$attrs', 'progressConfig', function($scope, $attrs, progressConfig) {
+.controller('ProgressController', ['$scope', '$element', '$attrs', '$animate', 'progressConfig', function($scope, $element, $attrs, $animate, progressConfig) {
+    $animate.enabled(false, $element);
+
     var self = this,
         animate = angular.isDefined($attrs.animate) ? $scope.$parent.$eval($attrs.animate) : progressConfig.animate;
 
